@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create account</title>
+
+    <style>
+        :root{
+            --bg0:#070A14;
+            --bg1:#0B1226;
+            --card:rgba(255,255,255,.06);
+            --card2:rgba(255,255,255,.08);
+            --stroke:rgba(255,255,255,.12);
+            --text:#EAF0FF;
+            --muted:#A9B4D0;
+            --primary:#6D5EF7;
+            --primary2:#4C3BFF;
+            --danger:#ff6b6b;
+            --ok:#3ee28f;
+            --ring:rgba(109,94,247,.35);
+            --shadow: 0 18px 60px rgba(0,0,0,.55);
+            --radius:18px;
+        }
+
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            min-height:100vh;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
+            color:var(--text);
+            background:
+                    radial-gradient(900px 600px at 20% 15%, rgba(109,94,247,.18), transparent 60%),
+                    radial-gradient(700px 500px at 80% 70%, rgba(76,59,255,.16), transparent 60%),
+                    radial-gradient(900px 600px at 30% 90%, rgba(62,226,143,.10), transparent 65%),
+                    linear-gradient(180deg, var(--bg0), var(--bg1));
+            display:grid;
+            place-items:center;
+            padding:28px 16px;
+        }
+
+        .shell{
+            width:min(980px, 100%);
+            display:grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap:22px;
+            align-items:stretch;
+        }
+
+        @media (max-width: 920px){
+            .shell{grid-template-columns:1fr; max-width:520px;}
+            .promo{display:none;}
+        }
+
+        .card{
+            background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+            border:1px solid var(--stroke);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            backdrop-filter: blur(10px);
+            overflow:hidden;
+            position:relative;
+        }
+
+        .card::before{
+            content:"";
+            position:absolute;
+            inset:-2px;
+            background: radial-gradient(600px 220px at 20% 0%, rgba(109,94,247,.20), transparent 55%),
+            radial-gradient(500px 200px at 90% 10%, rgba(62,226,143,.12), transparent 60%);
+            pointer-events:none;
+            opacity:.9;
+        }
+
+        .card-inner{position:relative; padding:26px;}
+
+        .title{
+            display:flex; align-items:center; gap:10px;
+            margin:0 0 8px 0;
+            font-size:26px;
+            letter-spacing:.2px;
+        }
+
+        .subtitle{
+            margin:0 0 18px 0;
+            color:var(--muted);
+            font-size:14px;
+            line-height:1.4;
+        }
+
+        .grid{
+            display:grid;
+            gap:12px;
+        }
+
+        label{
+            display:block;
+            color:var(--muted);
+            font-size:12px;
+            margin:4px 0 6px;
+            letter-spacing:.3px;
+        }
+
+        .field{
+            position:relative;
+        }
+
+        .input{
+            width:100%;
+            padding:12px 12px 12px 44px;
+            border-radius:14px;
+            border:1px solid rgba(255,255,255,.14);
+            background:rgba(5,8,18,.55);
+            color:var(--text);
+            outline:none;
+            transition: .18s ease;
+            font-size:14px;
+        }
+
+        .input:focus{
+            border-color: rgba(109,94,247,.55);
+            box-shadow: 0 0 0 6px var(--ring);
+        }
+
+        .icon{
+            position:absolute;
+            left:12px; top:50%;
+            transform:translateY(-50%);
+            width:18px; height:18px;
+            opacity:.85;
+            color:#cfd6ff;
+            pointer-events:none;
+        }
+
+        .hint, .msg{
+            font-size:12px;
+            margin-top:6px;
+            color:var(--muted);
+        }
+
+        .msg.err{color:var(--danger)}
+        .msg.ok{color:var(--ok)}
+
+        .alert{
+            border:1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            border-radius:14px;
+            padding:10px 12px;
+            margin-bottom:14px;
+            font-size:13px;
+            line-height:1.35;
+        }
+        .alert.err{border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.08)}
+        .alert.ok{border-color: rgba(62,226,143,.35); background: rgba(62,226,143,.08)}
+
+        .btn{
+            width:100%;
+            border:none;
+            border-radius:14px;
+            padding:12px 14px;
+            font-weight:800;
+            letter-spacing:.2px;
+            color:white;
+            cursor:pointer;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            box-shadow: 0 14px 36px rgba(109,94,247,.28);
+            transition:.18s ease;
+            margin-top:4px;
+        }
+        .btn:hover{transform:translateY(-1px)}
+        .btn:active{transform:translateY(0px); opacity:.95}
+
+        .footer{
+            margin-top:14px;
+            text-align:center;
+            font-size:14px;
+            color:var(--muted);
+        }
+        a{color:#9fb1ff; text-decoration:none}
+        a:hover{text-decoration:underline}
+
+        /* Right-side promo */
+        .promo{
+            padding:26px;
+        }
+        .promo h3{
+            margin:0 0 8px 0;
+            font-size:22px;
+        }
+        .promo p{
+            margin:0 0 18px 0;
+            color:var(--muted);
+            line-height:1.6;
+            font-size:14px;
+        }
+        .pill{
+            display:inline-flex;
+            gap:8px;
+            align-items:center;
+            padding:8px 10px;
+            border-radius:999px;
+            border:1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.05);
+            color:var(--muted);
+            font-size:12px;
+            margin-right:8px;
+            margin-bottom:10px;
+        }
+        .dot{
+            width:8px; height:8px; border-radius:99px;
+            background: rgba(62,226,143,.9);
+            box-shadow:0 0 0 6px rgba(62,226,143,.10);
+        }
+    </style>
+</head>
+
+<body>
+<div class="shell">
+
+    <div class="card">
+        <div class="card-inner">
+            <h1 class="title">
+                <!-- icon -->
+                <svg class="icon" style="position:static; transform:none; width:22px; height:22px;" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M20 21a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Create account
+            </h1>
+            <p class="subtitle">Register to access your dashboard.</p>
+
+            <div th:if="${error}" class="alert err" th:text="${error}"></div>
+
+            <form th:action="@{/register}" th:object="${registerRequest}" method="post" class="grid">
+
+                <div>
+                    <label>Full Name</label>
+                    <div class="field">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M20 21a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <input class="input" type="text" th:field="*{fullName}" placeholder="Your full name"/>
+                    </div>
+                    <div class="msg err" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <div class="field">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input class="input" type="email" th:field="*{email}" placeholder="example@gmail.com"/>
+                    </div>
+                    <div class="msg err" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <div>
+                    <label>Password</label>
+                    <div class="field">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M6 11h12v10H6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 16v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <input class="input" type="password" th:field="*{password}" placeholder="Minimum 6 characters"/>
+                    </div>
+                    <div class="msg err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+
+                <button class="btn" type="submit">Register</button>
+
+                <div class="footer">
+                    Already have an account? <a th:href="@{/login}">Login</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="card promo">
+        <div class="card-inner">
+            <h3>Modern, clean & secure</h3>
+            <p>
+                Your passwords are stored using <b>BCrypt hashing</b> and pages are protected with
+                <b>Spring Security sessions</b>.
+            </p>
+
+            <div class="pill"><span class="dot"></span> BCrypt password hashing</div>
+            <div class="pill"><span class="dot"></span> Session-based login</div>
+            <div class="pill"><span class="dot"></span> Protected dashboard</div>
+
+            <p style="margin-top:10px;">
+                You can re-use this same authentication module in your other projects like
+                Car Rental System and ADCAMS.
+            </p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

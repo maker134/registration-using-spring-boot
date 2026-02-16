@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login</title>
+
+    <style>
+        :root{
+            --bg0:#070A14; --bg1:#0B1226;
+            --card:rgba(255,255,255,.06);
+            --stroke:rgba(255,255,255,.12);
+            --text:#EAF0FF; --muted:#A9B4D0;
+            --primary:#6D5EF7; --primary2:#4C3BFF;
+            --danger:#ff6b6b; --ok:#3ee28f;
+            --ring:rgba(109,94,247,.35);
+            --shadow:0 18px 60px rgba(0,0,0,.55);
+            --radius:18px;
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0; min-height:100vh;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+            color:var(--text);
+            background:
+                    radial-gradient(900px 600px at 18% 25%, rgba(109,94,247,.18), transparent 60%),
+                    radial-gradient(700px 520px at 82% 70%, rgba(76,59,255,.16), transparent 60%),
+                    linear-gradient(180deg, var(--bg0), var(--bg1));
+            display:grid; place-items:center;
+            padding:28px 16px;
+        }
+        .card{
+            width:min(460px, 100%);
+            background:linear-gradient(180deg, var(--card), rgba(255,255,255,.04));
+            border:1px solid var(--stroke);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            backdrop-filter: blur(10px);
+            overflow:hidden;
+            position:relative;
+        }
+        .card::before{
+            content:"";
+            position:absolute; inset:-2px;
+            background:
+                    radial-gradient(520px 210px at 25% 0%, rgba(109,94,247,.22), transparent 58%),
+                    radial-gradient(520px 220px at 95% 12%, rgba(62,226,143,.10), transparent 60%);
+            pointer-events:none;
+            opacity:.9;
+        }
+        .inner{position:relative; padding:26px;}
+
+        h1{margin:0 0 8px 0; font-size:26px;}
+        .sub{margin:0 0 18px 0; color:var(--muted); font-size:14px;}
+
+        .alert{
+            border:1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            border-radius:14px;
+            padding:10px 12px;
+            margin-bottom:14px;
+            font-size:13px;
+            line-height:1.35;
+        }
+        .alert.err{border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.08)}
+        .alert.ok{border-color: rgba(62,226,143,.35); background: rgba(62,226,143,.08)}
+
+        label{display:block; color:var(--muted); font-size:12px; margin:10px 0 6px; letter-spacing:.3px;}
+        .field{position:relative}
+        .input{
+            width:100%;
+            padding:12px 12px 12px 44px;
+            border-radius:14px;
+            border:1px solid rgba(255,255,255,.14);
+            background:rgba(5,8,18,.55);
+            color:var(--text);
+            outline:none;
+            transition:.18s ease;
+            font-size:14px;
+        }
+        .input:focus{
+            border-color: rgba(109,94,247,.55);
+            box-shadow:0 0 0 6px var(--ring);
+        }
+        .icon{
+            position:absolute;
+            left:12px; top:50%;
+            transform:translateY(-50%);
+            width:18px; height:18px;
+            opacity:.85;
+            color:#cfd6ff;
+            pointer-events:none;
+        }
+
+        .btn{
+            width:100%;
+            border:none;
+            border-radius:14px;
+            padding:12px 14px;
+            font-weight:800;
+            letter-spacing:.2px;
+            color:white;
+            cursor:pointer;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            box-shadow: 0 14px 36px rgba(109,94,247,.28);
+            transition:.18s ease;
+            margin-top:14px;
+        }
+        .btn:hover{transform:translateY(-1px)}
+        .btn:active{transform:translateY(0px); opacity:.95}
+
+        .footer{
+            margin-top:14px;
+            text-align:center;
+            font-size:14px;
+            color:var(--muted);
+        }
+        a{color:#9fb1ff; text-decoration:none}
+        a:hover{text-decoration:underline}
+    </style>
+</head>
+
+<body>
+<div class="card">
+    <div class="inner">
+        <h1>Welcome back</h1>
+        <p class="sub">Login to continue.</p>
+
+        <div th:if="${param.error}" class="alert err">Invalid email or password.</div>
+        <div th:if="${param.logout}" class="alert ok">You have been logged out.</div>
+        <div th:if="${param.registered}" class="alert ok">Account created successfully. Please login.</div>
+
+        <form th:action="@{/login}" method="post">
+
+            <label>Email</label>
+            <div class="field">
+                <svg class="icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input class="input" type="email" name="email" placeholder="example@gmail.com" required />
+            </div>
+
+            <label>Password</label>
+            <div class="field">
+                <svg class="icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M6 11h12v10H6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 16v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <input class="input" type="password" name="password" placeholder="Your password" required />
+            </div>
+
+            <button class="btn" type="submit">Login</button>
+        </form>
+
+        <div class="footer">
+            Don’t have an account? <a th:href="@{/register}">Register</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
