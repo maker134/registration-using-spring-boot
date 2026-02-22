@@ -105,9 +105,10 @@
             position:relative;
         }
 
+        /* Input padding right increased to fit toggle button */
         .input{
             width:100%;
-            padding:12px 12px 12px 44px;
+            padding:12px 44px 12px 44px; /* left icon + right toggle */
             border-radius:14px;
             border:1px solid rgba(255,255,255,.14);
             background:rgba(5,8,18,.55);
@@ -130,6 +131,40 @@
             opacity:.85;
             color:#cfd6ff;
             pointer-events:none;
+        }
+
+        /* Password show/hide button */
+        .toggle-btn{
+            position:absolute;
+            right:10px;
+            top:50%;
+            transform:translateY(-50%);
+            width:34px;
+            height:34px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            cursor:pointer;
+            display:grid;
+            place-items:center;
+            transition:.15s ease;
+        }
+
+        .toggle-btn:hover{
+            background: rgba(255,255,255,.10);
+            transform:translateY(-50%) scale(1.02);
+        }
+
+        .toggle-btn:active{
+            transform:translateY(-50%) scale(.98);
+            opacity:.95;
+        }
+
+        .toggle-btn svg{
+            width:18px;
+            height:18px;
+            opacity:.9;
+            color:#cfd6ff;
         }
 
         .hint, .msg{
@@ -265,7 +300,26 @@
                             <path d="M6 11h12v10H6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M12 16v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
-                        <input class="input" type="password" th:field="*{password}" placeholder="Minimum 6 characters"/>
+
+                        <!-- IMPORTANT: keep th:field exactly as you had -->
+                        <input id="passwordInput" class="input" type="password" th:field="*{password}" placeholder="Minimum 6 characters"/>
+
+                        <!-- Show/Hide button -->
+                        <button type="button" class="toggle-btn" id="togglePasswordBtn" aria-label="Show password">
+                            <!-- eye icon (show) -->
+                            <svg id="eyeOpen" viewBox="0 0 24 24" fill="none">
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                            <!-- eye-off icon (hide) -->
+                            <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" style="display:none;">
+                                <path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M10.6 10.6a2.5 2.5 0 0 0 3.3 3.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M6.2 6.2C3.6 8.2 2 12 2 12s3.5 7 10 7c2 0 3.7-.6 5.1-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9.9 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17.7 17.7 0 0 1-2.7 3.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
                     </div>
                     <div class="msg err" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
@@ -300,5 +354,27 @@
     </div>
 
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('passwordInput');
+        const btn = document.getElementById('togglePasswordBtn');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+
+        btn.addEventListener('click', function () {
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+
+            // swap icons
+            eyeOpen.style.display = isHidden ? 'none' : 'block';
+            eyeClosed.style.display = isHidden ? 'block' : 'none';
+
+            // accessibility label
+            btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+        });
+    })();
+</script>
+
 </body>
 </html>

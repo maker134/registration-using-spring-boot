@@ -67,9 +67,11 @@
 
         label{display:block; color:var(--muted); font-size:12px; margin:10px 0 6px; letter-spacing:.3px;}
         .field{position:relative}
+
+        /* input padding-right increased to fit toggle button */
         .input{
             width:100%;
-            padding:12px 12px 12px 44px;
+            padding:12px 44px 12px 44px; /* left icon + right toggle */
             border-radius:14px;
             border:1px solid rgba(255,255,255,.14);
             background:rgba(5,8,18,.55);
@@ -90,6 +92,37 @@
             opacity:.85;
             color:#cfd6ff;
             pointer-events:none;
+        }
+
+        /* Password show/hide button */
+        .toggle-btn{
+            position:absolute;
+            right:10px;
+            top:50%;
+            transform:translateY(-50%);
+            width:34px;
+            height:34px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            cursor:pointer;
+            display:grid;
+            place-items:center;
+            transition:.15s ease;
+        }
+        .toggle-btn:hover{
+            background: rgba(255,255,255,.10);
+            transform:translateY(-50%) scale(1.02);
+        }
+        .toggle-btn:active{
+            transform:translateY(-50%) scale(.98);
+            opacity:.95;
+        }
+        .toggle-btn svg{
+            width:18px;
+            height:18px;
+            opacity:.9;
+            color:#cfd6ff;
         }
 
         .btn{
@@ -148,7 +181,24 @@
                     <path d="M6 11h12v10H6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M12 16v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <input class="input" type="password" name="password" placeholder="Your password" required />
+
+                <input id="loginPasswordInput" class="input" type="password" name="password" placeholder="Your password" required />
+
+                <button type="button" class="toggle-btn" id="toggleLoginPasswordBtn" aria-label="Show password">
+                    <!-- eye icon (show) -->
+                    <svg id="loginEyeOpen" viewBox="0 0 24 24" fill="none">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+
+                    <!-- eye-off icon (hide) -->
+                    <svg id="loginEyeClosed" viewBox="0 0 24 24" fill="none" style="display:none;">
+                        <path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M10.6 10.6a2.5 2.5 0 0 0 3.3 3.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M6.2 6.2C3.6 8.2 2 12 2 12s3.5 7 10 7c2 0 3.7-.6 5.1-1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9.9 4.3A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17.7 17.7 0 0 1-2.7 3.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
 
             <button class="btn" type="submit">Login</button>
@@ -159,5 +209,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('loginPasswordInput');
+        const btn = document.getElementById('toggleLoginPasswordBtn');
+        const eyeOpen = document.getElementById('loginEyeOpen');
+        const eyeClosed = document.getElementById('loginEyeClosed');
+
+        btn.addEventListener('click', function () {
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+
+            eyeOpen.style.display = isHidden ? 'none' : 'block';
+            eyeClosed.style.display = isHidden ? 'block' : 'none';
+
+            btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+        });
+    })();
+</script>
+
 </body>
 </html>
